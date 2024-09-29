@@ -16,13 +16,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('localization')->namespace('API')->group(function () {
 
-    Route::post('login', 'UserController@login');
-    Route::post('register', 'UserController@register');
-    Route::post('user/verificationCode', 'UserController@activeCode');
-    Route::post('user/forget/password', 'UserController@forgetPassword');
-    Route::post('user/code/check/password', 'UserController@checkCode');
-    Route::post('user/reset/password', 'UserController@resetPassword');
-    Route::get('user/logout', 'UserController@logout')->middleware('auth:sanctum');
+    // Route::post('login', 'UserController@login');
+    // Route::post('register', 'UserController@register');
+    // Route::post('user/verificationCode', 'UserController@activeCode');
+    // Route::post('user/forget/password', 'UserController@forgetPassword');
+    // Route::post('user/code/check/password', 'UserController@checkCode');
+    // Route::post('user/reset/password', 'UserController@resetPassword');
+    // Route::get('user/logout', 'UserController@logout')->middleware('auth:sanctum');
 
 
 

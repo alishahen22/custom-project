@@ -42,5 +42,14 @@ return new class extends SettingsMigration
         $this->migrator->add('general.value_desc_ar', '');
         $this->migrator->add('general.value_desc_en', '');
         $this->migrator->add('general.value_image', '');
+        $this->migrator->add('general.seo_title_en', '');
+        $this->migrator->add('general.seo_title_ar', '');
+        $this->migrator->add('general.decs_footer_en', '');
+        $this->migrator->add('general.decs_footer_ar', '');
+        $this->migrator->add('general.logo_footer', '');
+
+
+
+
     }
 };

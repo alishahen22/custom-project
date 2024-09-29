@@ -2,21 +2,26 @@
 
 namespace App\Providers\Filament;
 
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Filament\PanelProvider;
+use App\Settings\GeneralSettings;
+use Filament\Support\Colors\Color;
+use Filament\Widgets\AccountWidget;
+use App\Filament\Pages\DashboardPage;
+use Filament\Widgets\FilamentInfoWidget;
+use Filament\Http\Middleware\Authenticate;
+use Filament\FontProviders\GoogleFontProvider;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -25,20 +30,50 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            ->profile(isSimple: false)
+
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => [
+                    50 => '238, 242, 255',
+                    100 => '224, 231, 255',
+                    200 => '199, 210, 254',
+                    300 => '165, 180, 252',
+                    400 => '129, 140, 248',
+                    500 => '99, 102, 241',
+                    600 => '79, 70, 229',
+                    700 => '67, 56, 202',
+                    800 => '55, 48, 163',
+                    900 => '49, 46, 129',
+                    950 => '30, 27, 75',
+                ],
             ])
+
+            ->brandName(function () {
+                $locale = app()->getLocale();
+                $property = 'site_name_' . $locale;
+                return app(GeneralSettings::class)->$property;
+            })
+
+            ->brandLogo(fn () => view('filament.admin.logo'))
+
+            // ->brandLogo(asset('storage/'. app(GeneralSettings::class)->logo))
+
+            ->favicon(asset('storage/'. app(GeneralSettings::class)->favicon))
+            ->sidebarCollapsibleOnDesktop()
+            ->databaseNotifications(true)
+            ->databaseNotificationsPolling('1s')
+            ->font('Inter', provider: GoogleFontProvider::class)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                DashboardPage::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                // Widgets\AccountWidget::class,
+                // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -50,9 +85,19 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                \Hasnayeen\Themes\Http\Middleware\SetTheme::class
+
+            ])
+            ->tenantMiddleware([
+
+                \Hasnayeen\Themes\Http\Middleware\SetTheme::class
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+          //  ->sidebarWidth('20rem')
+            ->plugins([
+                \Hasnayeen\Themes\ThemesPlugin::make()
             ]);
     }
 }
